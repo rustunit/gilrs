@@ -105,7 +105,7 @@ impl Gamepad {
             inner: gamepad,
             state: GamepadState::new(),
             status: status,
-            ff_effects: (0..max_effects).map(|_| None).collect(),
+            ff_effects: vec![None; max_effects],
         }
     }
 
