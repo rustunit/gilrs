@@ -9,7 +9,7 @@
 use super::gamepad::Gamepad;
 use ff::{EffectData, Error};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Effect {}
 
 impl Effect {

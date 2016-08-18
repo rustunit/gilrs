@@ -12,7 +12,7 @@ use libc as c;
 use std::mem;
 use constants;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Effect {
     id: i16,
     fd: i32,

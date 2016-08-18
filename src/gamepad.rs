@@ -300,7 +300,7 @@ impl GamepadImplExt for Gamepad {
 }
 
 /// Represents effect uploaded to device
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Effect {
     inner: platform::Effect,
 }
