@@ -109,6 +109,20 @@ impl Mapping {
                     BTN_DPAD_RIGHT => add_button("dpright", ev_code, Button::DPadRight)?,
                     BTN_C => add_button("c", ev_code, Button::C)?,
                     BTN_Z => add_button("z", ev_code, Button::Z)?,
+
+                    BTN_THUMB2 => add_button("a", ev_code, Button::South)?,
+                    BTN_TOP => add_button("b", ev_code, Button::East)?,
+                    BTN_TRIGGER => add_button("x", ev_code, Button::West)?,
+                    BTN_THUMB => add_button("y", ev_code, Button::North)?,
+                    BTN_TOP2 => add_button("leftshoulder", ev_code, Button::LeftTrigger)?,
+                    BTN_BASE => add_button("rightshoulder", ev_code, Button::RightTrigger)?,
+                    BTN_PINKIE => add_button("lefttrigger", ev_code, Button::LeftTrigger2)?,
+                    BTN_BASE2 => add_button("righttrigger", ev_code, Button::RightTrigger2)?,
+                    BTN_BASE3 => add_button("back", ev_code, Button::Select)?,
+                    BTN_BASE4 => add_button("start", ev_code, Button::Start)?,
+                    BTN_BASE5 => add_button("leftstick", ev_code, Button::LeftThumb)?,
+                    BTN_BASE6 => add_button("rightstick", ev_code, Button::RightThumb)?,
+                    
                     BTN_UNKNOWN => return Err(MappingError::UnknownElement),
                     _ => unreachable!(),
                 }
@@ -348,7 +362,20 @@ impl Default for Mapping {
             nec::BTN_DPAD_UP => Button::DPadUp,
             nec::BTN_DPAD_DOWN => Button::DPadDown,
             nec::BTN_DPAD_LEFT => Button::DPadLeft,
-            nec::BTN_DPAD_RIGHT => Button::DPadRight
+            nec::BTN_DPAD_RIGHT => Button::DPadRight,
+
+            nec::BTN_THUMB2 => Button::South,
+            nec::BTN_TOP => Button::East,
+            nec::BTN_THUMB => Button::North,
+            nec::BTN_TRIGGER => Button::West,
+            nec::BTN_TOP2 => Button::LeftTrigger,
+            nec::BTN_BASE => Button::RightTrigger,
+            nec::BTN_PINKIE => Button::LeftTrigger2,
+            nec::BTN_BASE2 => Button::RightTrigger2,
+            nec::BTN_BASE3 => Button::Select,
+            nec::BTN_BASE4 => Button::Start,
+            nec::BTN_BASE5 => Button::LeftThumb,
+            nec::BTN_BASE6 => Button::RightThumb
         ];
 
         let axes = vec_map![

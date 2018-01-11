@@ -793,6 +793,20 @@ const SYN_DROPPED: u16 = 0x03;
 const BTN_MISC: u16 = 0x100;
 const BTN_MOUSE: u16 = 0x110;
 const BTN_JOYSTICK: u16 = 0x120;
+
+const BTN_TRIGGER: u16 = 0x120;
+const BTN_THUMB: u16 = 0x121;
+const BTN_THUMB2: u16 = 0x122;
+const BTN_TOP: u16 = 0x123;
+const BTN_TOP2: u16 = 0x124;
+const BTN_PINKIE: u16 = 0x125;
+const BTN_BASE: u16 = 0x126;
+const BTN_BASE2: u16 = 0x127;
+const BTN_BASE3: u16 = 0x128;
+const BTN_BASE4: u16 = 0x129;
+const BTN_BASE5: u16 = 0x12a;
+const BTN_BASE6: u16 = 0x12b;
+
 const BTN_SOUTH: u16 = 0x130;
 const BTN_EAST: u16 = 0x131;
 #[allow(dead_code)]
@@ -810,6 +824,7 @@ const BTN_START: u16 = 0x13b;
 const BTN_MODE: u16 = 0x13c;
 const BTN_THUMBL: u16 = 0x13d;
 const BTN_THUMBR: u16 = 0x13e;
+
 
 const BTN_DPAD_UP: u16 = 0x220;
 const BTN_DPAD_DOWN: u16 = 0x221;
@@ -836,6 +851,19 @@ const FF_SINE: u16 = 0x5a;
 const FF_GAIN: u16 = 0x60;
 
 pub mod native_ev_codes {
+    pub const BTN_TRIGGER: u16 = super::BTN_TRIGGER;
+    pub const BTN_THUMB: u16 = super::BTN_THUMB;
+    pub const BTN_THUMB2: u16 = super::BTN_THUMB2;
+    pub const BTN_TOP: u16 = super::BTN_TOP;
+    pub const BTN_TOP2: u16 = super::BTN_TOP2;
+    pub const BTN_PINKIE: u16 = super::BTN_PINKIE;
+    pub const BTN_BASE: u16 = super::BTN_BASE;
+    pub const BTN_BASE2: u16 = super::BTN_BASE2;
+    pub const BTN_BASE3: u16 = super::BTN_BASE3;
+    pub const BTN_BASE4: u16 = super::BTN_BASE4;
+    pub const BTN_BASE5: u16 = super::BTN_BASE5;
+    pub const BTN_BASE6: u16 = super::BTN_BASE6;
+
     pub const BTN_SOUTH: u16 = super::BTN_SOUTH;
     pub const BTN_EAST: u16 = super::BTN_EAST;
     #[allow(dead_code)]
