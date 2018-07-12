@@ -34,7 +34,7 @@ impl Code {
 }
 
 /// Holds information about gamepad event.
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Debug,)]
 pub struct Event {
     /// Id of gamepad.
     pub id: usize,
@@ -132,7 +132,7 @@ pub(crate) enum RawEventType {
 }
 
 #[repr(u16)]
-#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
 /// Gamepad's elements which state can be represented by value from 0.0 to 1.0.
 ///
 /// ![Controller layout](https://arvamer.gitlab.io/gilrs/img/controller.svg)
@@ -241,7 +241,7 @@ impl Default for Button {
 }
 
 #[repr(u16)]
-#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
 /// Gamepad's elements which state can be represented by value from -1.0 to 1.0.
 ///
 /// ![Controller layout](https://arvamer.gitlab.io/gilrs/img/controller.svg)
@@ -288,7 +288,7 @@ impl Axis {
     }
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Hash)]
 pub(crate) struct AxisInfo {
     pub min: i32,
     pub max: i32,
@@ -328,7 +328,7 @@ impl AxisInfo {
 }
 
 /// Represents `Axis` or `Button`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum AxisOrBtn {
     Axis(Axis),
     Btn(Button),
