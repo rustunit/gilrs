@@ -34,7 +34,7 @@ impl Code {
 }
 
 /// Holds information about gamepad event.
-#[derive(Copy, Clone, PartialEq, Debug,)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Event {
     /// Id of gamepad.
     pub id: usize,
@@ -288,7 +288,7 @@ impl Axis {
     }
 }
 
-#[derive(Copy, Clone, Debug, Hash)]
+#[derive(Copy, Clone, Debug)]
 pub(crate) struct AxisInfo {
     pub min: i32,
     pub max: i32,
