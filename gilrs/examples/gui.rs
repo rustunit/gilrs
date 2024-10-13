@@ -322,12 +322,18 @@ fn main() {
 
 #[cfg(target_arch = "wasm32")]
 fn main() {
+    use eframe::wasm_bindgen::JsCast as _;
     console_error_panic_hook::set_once();
     let web_options = eframe::WebOptions::default();
-    eframe::start_web(
-        "canvas",
-        web_options,
-        Box::new(|cc| Ok(Box::new(MyEguiApp::new(cc)))),
-    )
-    .unwrap();
+    wasm_bindgen_futures::spawn_local(async {
+        let document = web_sys::window().unwrap().document().unwrap();
+        let canvas = document.get_element_by_id("canvas").unwrap().dyn_into::<web_sys::HtmlCanvasElement>().unwrap();
+        eframe::WebRunner::new()
+            .start(
+                canvas,
+                web_options,
+                Box::new(|cc| Ok(Box::new(MyEguiApp::new(cc)))),
+            )
+            .await;
+    });
 }
