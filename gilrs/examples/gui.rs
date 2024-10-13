@@ -1,6 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 
-use crate::egui::plot::{MarkerShape, PlotPoints, Points};
+use egui_plot::{MarkerShape, PlotPoints, Points, Plot};
 use crate::egui::RichText;
 use eframe::egui;
 use eframe::egui::Vec2;
@@ -167,7 +167,9 @@ impl eframe::App for MyEguiApp {
                                     ui.horizontal(|ui| {
                                         ui.label(&uuid);
                                         if ui.button("Copy").clicked() {
-                                            ui.output().copied_text = uuid;
+                                            ui.output_mut(|o| {
+                                                o.copied_text = uuid;
+                                            });
                                         }
                                     });
                                     ui.end_row();
@@ -245,7 +247,7 @@ impl eframe::App for MyEguiApp {
                                             .map(|a| a.value())
                                             .unwrap_or_default()
                                             as f64;
-                                        egui::widgets::plot::Plot::new(format!("{name}_plot"))
+                                        Plot::new(format!("{name}_plot"))
                                             .width(150.0)
                                             .height(150.0)
                                             .min_size(Vec2::splat(3.25))
@@ -304,26 +306,34 @@ impl eframe::App for MyEguiApp {
 
 #[cfg(not(target_arch = "wasm32"))]
 fn main() {
+    use eframe::egui::ViewportBuilder;
+
     env_logger::init();
     let native_options = eframe::NativeOptions {
-        initial_window_size: Some(Vec2::new(1024.0, 768.0)),
+        viewport: ViewportBuilder::default().with_inner_size(Vec2::new(1024.0, 768.0)),
         ..Default::default()
     };
     eframe::run_native(
         "Gilrs Input Tester",
         native_options,
-        Box::new(|cc| Box::new(MyEguiApp::new(cc))),
-    );
+        Box::new(|cc| Ok(Box::new(MyEguiApp::new(cc)))),
+    ).unwrap();
 }
 
 #[cfg(target_arch = "wasm32")]
 fn main() {
+    use eframe::wasm_bindgen::JsCast as _;
     console_error_panic_hook::set_once();
     let web_options = eframe::WebOptions::default();
-    eframe::start_web(
-        "canvas",
-        web_options,
-        Box::new(|cc| Box::new(MyEguiApp::new(cc))),
-    )
-    .unwrap();
+    wasm_bindgen_futures::spawn_local(async {
+        let document = web_sys::window().unwrap().document().unwrap();
+        let canvas = document.get_element_by_id("canvas").unwrap().dyn_into::<web_sys::HtmlCanvasElement>().unwrap();
+        eframe::WebRunner::new()
+            .start(
+                canvas,
+                web_options,
+                Box::new(|cc| Ok(Box::new(MyEguiApp::new(cc)))),
+            )
+            .await;
+    });
 }
