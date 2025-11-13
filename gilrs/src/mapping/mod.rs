@@ -18,7 +18,7 @@ use std::env;
 use std::error::Error;
 use std::fmt::{Display, Formatter, Result as FmtResult, Write as _};
 
-use fnv::FnvHashMap;
+use rustc_hash::FxHashMap;
 use uuid::Uuid;
 use vec_map::VecMap;
 
@@ -44,7 +44,7 @@ const SDL_PLATFORM_NAME: &str = "Unknown";
 ///
 /// This struct is internal, `MappingData` is exported in public interface as `Mapping`.
 pub struct Mapping {
-    mappings: FnvHashMap<EvCode, AxisOrBtn>,
+    mappings: FxHashMap<EvCode, AxisOrBtn>,
     name: String,
     default: bool,
     hats_mapped: u8,
@@ -53,7 +53,7 @@ pub struct Mapping {
 impl Mapping {
     pub fn new() -> Self {
         Mapping {
-            mappings: FnvHashMap::default(),
+            mappings: FxHashMap::default(),
             name: String::new(),
             default: false,
             hats_mapped: 0,
@@ -64,10 +64,10 @@ impl Mapping {
         use self::Axis as Ax;
         use self::AxisOrBtn::*;
 
-        macro_rules! fnv_map {
+        macro_rules! fx_map {
             ( $( $key:expr => $elem:expr ),* ) => {
                 {
-                    let mut map = FnvHashMap::default();
+                    let mut map = FxHashMap::default();
                     $(
                         map.insert($key, $elem);
                     )*
@@ -77,7 +77,7 @@ impl Mapping {
             };
         }
 
-        let mut mappings = fnv_map![
+        let mut mappings = fx_map![
             nec::BTN_SOUTH => Btn(Button::South),
             nec::BTN_EAST => Btn(Button::East),
             nec::BTN_C => Btn(Button::C),
@@ -187,7 +187,7 @@ impl Mapping {
             return Err(MappingError::InvalidName);
         }
 
-        let mut mappings = FnvHashMap::default();
+        let mut mappings = FxHashMap::default();
         let mut sdl_mappings = format!("{},{},", uuid.as_simple(), name);
 
         {
@@ -377,7 +377,7 @@ impl Mapping {
         mapped_btn: Button,
         buttons: &[EvCode],
         sdl_mappings: &mut String,
-        mappings: &mut FnvHashMap<EvCode, AxisOrBtn>,
+        mappings: &mut FxHashMap<EvCode, AxisOrBtn>,
     ) -> Result<(), MappingError> {
         let n_btn = buttons
             .iter()
@@ -394,7 +394,7 @@ impl Mapping {
         mapped_axis: Axis,
         axes: &[EvCode],
         sdl_mappings: &mut String,
-        mappings: &mut FnvHashMap<EvCode, AxisOrBtn>,
+        mappings: &mut FxHashMap<EvCode, AxisOrBtn>,
     ) -> Result<(), MappingError> {
         let n_axis = axes
             .iter()
