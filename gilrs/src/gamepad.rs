@@ -214,7 +214,7 @@ impl Gilrs {
         if let Ok(msg) = self.rx.try_recv() {
             return match msg {
                 FfMessage::EffectCompleted { event } => Some(event),
-            }
+            };
         }
         if let Some(ev) = self.events.pop_front() {
             Some(ev)
@@ -467,7 +467,7 @@ impl Gilrs {
     ///     # break;
     /// }
     /// ```
-    pub fn gamepad(&self, id: GamepadId) -> Gamepad {
+    pub fn gamepad(&self, id: GamepadId) -> Gamepad<'_> {
         Gamepad {
             inner: self.inner.gamepad(id.0).unwrap(),
             data: &self.gamepads_data[id.0],
