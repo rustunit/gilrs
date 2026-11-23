@@ -319,7 +319,11 @@ impl Gilrs {
                                     }
                                 }
                                 Some(AxisOrBtn::Axis(a)) => {
-                                    EventType::AxisChanged(a, axis_value(&axis_info, val, a), nec)
+                                    let mut val = axis_value(&axis_info, val, a);
+                                    if self.gamepad(id).is_axis_inverted(nec) {
+                                        val = -val;
+                                    }
+                                    EventType::AxisChanged(a, val, nec)
                                 }
                                 None => EventType::AxisChanged(
                                     Axis::Unknown,
@@ -943,6 +947,10 @@ impl Gamepad<'_> {
         self.data.axis_or_btn_name(ec)
     }
 
+    pub(crate) fn is_axis_inverted(&self, ec: Code) -> bool {
+        self.data.is_axis_inverted(ec)
+    }
+
     /// Returns `Code` associated with `btn`.
     pub fn button_code(&self, btn: Button) -> Option<Code> {
         self.data.button_code(btn)
@@ -1107,6 +1115,11 @@ impl GamepadData {
     /// Returns `AxisOrBtn` mapped to `Code`.
     pub fn axis_or_btn_name(&self, ec: Code) -> Option<AxisOrBtn> {
         self.mapping.map(&ec.0)
+    }
+
+    /// Whether the mapping inverts the axis at `ec` (a trailing `~`).
+    pub(crate) fn is_axis_inverted(&self, ec: Code) -> bool {
+        self.mapping.is_inverted(&ec.0)
     }
 
     /// Returns `Code` associated with `btn`.

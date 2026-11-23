@@ -17,7 +17,7 @@ use std::env;
 use std::error::Error;
 use std::fmt::{Display, Formatter, Result as FmtResult, Write as _};
 
-use fnv::FnvHashMap;
+use fnv::{FnvHashMap, FnvHashSet};
 use uuid::Uuid;
 use vec_map::VecMap;
 
@@ -44,6 +44,8 @@ const SDL_PLATFORM_NAME: &str = "Unknown";
 /// This struct is internal, `MappingData` is exported in public interface as `Mapping`.
 pub struct Mapping {
     mappings: FnvHashMap<EvCode, AxisOrBtn>,
+    /// Axes mapped with a trailing `~`, whose values are negated.
+    inverted: FnvHashSet<EvCode>,
     name: String,
     default: bool,
     hats_mapped: u8,
@@ -53,6 +55,7 @@ impl Mapping {
     pub fn new() -> Self {
         Mapping {
             mappings: FnvHashMap::default(),
+            inverted: FnvHashSet::default(),
             name: String::new(),
             default: false,
             hats_mapped: 0,
@@ -163,6 +166,7 @@ impl Mapping {
 
         Mapping {
             mappings,
+            inverted: FnvHashSet::default(),
             name: String::new(),
             default: true,
             hats_mapped: 0,
@@ -256,6 +260,7 @@ impl Mapping {
 
         let mapping = Mapping {
             mappings,
+            inverted: FnvHashSet::default(),
             name: name.to_owned(),
             default: false,
             hats_mapped: 0,
@@ -291,10 +296,15 @@ impl Mapping {
                 Token::Uuid(v) => uuid = Some(v),
 
                 Token::Name(name) => mapping.name = name.to_owned(),
-                Token::AxisMapping { from, to, .. } => {
+                Token::AxisMapping {
+                    from, to, inverted, ..
+                } => {
                     let axis = axes.get(from as usize).cloned();
                     if let Some(axis) = axis {
                         mapping.mappings.insert(axis, to);
+                        if inverted {
+                            mapping.inverted.insert(axis);
+                        }
                     } else {
                         warn!(
                             "SDL-mapping {} {}: Unknown axis a{}",
@@ -410,6 +420,10 @@ impl Mapping {
 
     pub fn map(&self, code: &EvCode) -> Option<AxisOrBtn> {
         self.mappings.get(code).cloned()
+    }
+
+    pub fn is_inverted(&self, code: &EvCode) -> bool {
+        self.inverted.contains(code)
     }
 
     pub fn map_rev(&self, el: &AxisOrBtn) -> Option<EvCode> {
@@ -664,6 +678,18 @@ mod tests {
     #[test]
     fn mapping() {
         Mapping::parse_sdl_mapping(TEST_STR, &BUTTONS, &AXES).unwrap();
+    }
+
+    #[test]
+    fn inverted_axes() {
+        let mapping = Mapping::parse_sdl_mapping(
+            "03000000260900008888000000010001,Inverted,leftx:a0,lefty:a1~,platform:Linux,",
+            &BUTTONS,
+            &AXES,
+        )
+        .unwrap();
+        assert!(!mapping.is_inverted(&AXES[0]));
+        assert!(mapping.is_inverted(&AXES[1]));
     }
 
     #[test]
